@@ -1,7 +1,46 @@
-from typing import Any
+def ft_min(
+        args: list[int | float]
+        ) -> float | None:
+    """Calculate the minimum of a list of numbers."""
+
+    if not all(isinstance(x, (int, float)) for x in args):
+        raise TypeError("Non numeric value in list")
+
+    if not args:
+        print('ERROR')
+        return None
+
+    result = args[0]
+    for x in args:
+        if x < result:
+            result = x
+
+    return result
 
 
-def ft_mean(args: list[int | float]) -> float:
+def ft_max(
+        args: list[int | float]
+    ) -> float | None:
+    """Calculate the maximum of a list of numbers."""
+
+    if not all(isinstance(x, (int, float)) for x in args):
+        raise TypeError("Non numeric value in list")
+
+    if not args:
+        print('ERROR')
+        return None
+
+    result = args[0]
+    for x in args:
+        if x > result:
+            result = x
+
+    return result
+
+
+def ft_mean(
+        args: list[int | float]
+    ) -> float | None:
     """Calculate the mean of a list of numbers."""
 
     if not all(isinstance(x, (int, float)) for x in args):
@@ -19,27 +58,10 @@ def ft_mean(args: list[int | float]) -> float:
     return result
 
 
-def ft_median(args: list[int | float]) -> float:
-    """Calculate the median of a list of numbers."""
-
-    if not all(isinstance(x, (int, float)) for x in args):
-        raise TypeError("Non numeric value in list")
-
-    if not args:
-        print('ERROR')
-        return None
-
-    sort = sorted(args)
-    n = len(sort)
-    mid = n // 2
-    if n % 2 == 0:
-        return (sort[mid - 1] + sort[mid]) / 2
-    else:
-        return sort[mid]
-
-
-def ft_quartile(args: list[int | float]) -> list:
-    """Calculate the quartile of a list of numbers."""
+def ft_percentile(
+        args: list[int | float]
+    ) -> list | None:
+    """Calculate the percentile of a list of numbers."""
 
     if not all(isinstance(x, (int, float)) for x in args):
         raise TypeError("Non numeric value in list")
@@ -52,13 +74,22 @@ def ft_quartile(args: list[int | float]) -> list:
     n = len(sort)
 
     result = []
-    result.append(float(sort[n // 4]))
-    result.append(float(sort[(n * 3) // 4]))
+    for p in [0.25, 0.5, 0.75]:
+        position = (n - 1) * p
+        index = int(position)
+        fraction = position - index
+        if fraction == 0:
+            result.append(float(sort[index]))
+        else:
+            value = sort[index] + (sort[index + 1] - sort[index]) * fraction
+            result.append(float(value))
 
     return result
 
 
-def ft_var(args: list[int | float]) -> float:
+def ft_var(
+        args: list[int | float]
+    ) -> float | None:
     """Calculate the variance of a list of numbers."""
 
     if not all(isinstance(x, (int, float)) for x in args):
@@ -72,12 +103,14 @@ def ft_var(args: list[int | float]) -> float:
     result = 0
     for x in range(len(args)):
         result += (args[x] - mean) ** 2
-    result /= len(args)
+    result /= len(args) - 1
 
     return result
 
 
-def ft_std(args: list[int | float]) -> float:
+def ft_std(
+        args: list[int | float]
+    ) -> float | None:
     """Calculate the standard deviation of a list of numbers."""
 
     if not all(isinstance(x, (int, float)) for x in args):
@@ -88,34 +121,7 @@ def ft_std(args: list[int | float]) -> float:
         return None
 
     var = ft_var(args)
-    # Standars deviation is the square root of variance.
+    # Standard deviation is the square root of variance.
     result = var ** 0.5
 
     return result
-
-
-def ft_statistics(*args: Any, **kwargs: Any) -> None:
-    """Calculate differents statistics."""
-
-    try:
-        for x in kwargs:
-            match kwargs[x]:
-                case 'mean':
-                    result = ft_mean(list(args))
-                case 'median':
-                    result = ft_median(list(args))
-                case 'quartile':
-                    result = ft_quartile(list(args))
-                case 'std':
-                    result = ft_std(list(args))
-                case 'var':
-                    result = ft_var(list(args))
-                case _:
-                    result = None
-            if result is not None:
-                print(f'{kwargs[x]} : {result}')
-
-    except TypeError as error:
-        print('Type error:', error)
-    except Exception as error:
-        print('Error:', error)
