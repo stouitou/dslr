@@ -1,6 +1,14 @@
 import sys
 import pandas as pd
-from src.utils import load_csv_dataset
+from tabulate import tabulate
+from src.helpers.utils import load_csv_dataset
+from src.helpers.statistics import (
+    ft_max,
+    ft_mean,
+    ft_min,
+    ft_percentile,
+    ft_std
+)
 
 
 if __name__ == "__main__":
@@ -14,21 +22,33 @@ if __name__ == "__main__":
         if dataset is None:
             sys.exit(1)
 
-        print(dataset.info())
+        statistics = {
+            "": ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]
+        }
+        for column_name, column in dataset.items():
+            if column.dtype == float:
+                non_null_values = column.dropna()
+                data = list(non_null_values)
+                percentiles = ft_percentile(data)
+                subject = column_name if len(column_name) < 15 else column_name[:12] + "..."
+                statistics[subject] = [
+                    len(non_null_values),
+                    ft_mean(data),
+                    ft_std(data),
+                    ft_min(data),
+                    percentiles[0],
+                    percentiles[1],
+                    percentiles[2],
+                    ft_max(data)
+                ]
 
-        drop_null_dataset = dataset.dropna()
-        print(drop_null_dataset.info())
-
-        fill_null_dataset = dataset.fillna(0)
-        print(fill_null_dataset.info())
-
-        duplicate_removed_dataset = dataset.drop_duplicates()
-        print(duplicate_removed_dataset.info())
-
-        for feature in dataset.items():
-            print(feature[0])
-            print(len(feature[1]))
-            # print(feature)
+        print(
+            tabulate(
+                statistics,
+                headers="keys",
+                floatfmt=".6f"
+            )
+        )
 
     except Exception as error:
         print("Program exited with a fatal error.", error)
