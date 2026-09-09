@@ -1,17 +1,3 @@
-V.1 Data analysis :
-    describe.py (dataset as parameter) ->
-        - count
-        - mean
-        - std
-        - min
-        - 25% (percentiles)
-        - 50% (percentiles)
-        - 75% (percentiles)
-        - max
-
-    Se partager ce qui est a renvoyer ?
-    Preparer les donnees, "annuler" les valeurs nulles (ne pas compter / compter comme moyenne ?), normaliser
-
 V.2 Data visualization :
     V. 2.1 Histogram :
         histogram.py ->
@@ -19,12 +5,6 @@ V.2 Data visualization :
     V. 2.2 Scatter plot :
         scatter_plot.py ->
             What are the two features that are similar?
-    V. 2.3 Pair plot :
-        pair_plot.py ->
-            (or scatter plot matrix)
-            From this visualization, which features are you going to use for your logistic regression?
-    
-    Un commence par l'histogram, l'autre par le scatter plot. Celui qui finit en premier fait le dernier ?
 
 V. 3 Logistic Regression :
     One-vs-all (one-vs-rest)
