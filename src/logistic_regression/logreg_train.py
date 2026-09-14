@@ -5,7 +5,14 @@ from numpy.typing import NDArray
 from config import THETA_FILE, LEARNING_RATE, N_ITERATION
 from src.helpers.utils import load_csv_dataset
 from src.logistic_regression.logistic_regression import gradient_descent
-from src.logistic_regression.plot_data import plot_cost_history
+from src.logistic_regression.plot_data import plot_dataset, plot_cost_history
+from src.helpers.statistics import (
+    ft_max,
+    ft_mean,
+    ft_min,
+    ft_percentile,
+    ft_std
+)
 
 
 def get_features(
@@ -21,6 +28,15 @@ def get_features(
     return features
 
 
+def get_number_of_features(
+        dataset: pd.DataFrame
+    ) -> int:
+
+    features = get_features(dataset)
+
+    return len(features)
+
+
 def get_targets(
         dataset: pd.DataFrame
     ) -> list[str]:
@@ -29,6 +45,16 @@ def get_targets(
     targets = np.unique(labels)
 
     return targets
+
+
+def initialize_theta(
+        n: int
+    ) -> NDArray[np.float64]:
+
+    return np.zeros((
+        n + 1,
+        1
+    ))
 
 
 def prepare_training_data(
@@ -40,10 +66,12 @@ def prepare_training_data(
     if not required_column.issubset(dataset.columns):
         raise ValueError("dataset must contain 'Hogwarts House' column.")
 
-    x: NDArray[np.float64] = dataset[features].to_numpy()
+    features = get_features(dataset)
+    x = dataset[features].to_numpy()
+
     mask = dataset["Hogwarts House"] == hogwarts_house
-    y: NDArray[np.float64] = mask.to_numpy(dtype=np.float64).reshape(mask.shape[0], 1)
-    print(y)
+    y = mask.to_numpy(dtype=np.float64)
+    y = y.reshape(y.shape[0], 1)
 
     return x, y
 
@@ -51,20 +79,22 @@ def prepare_training_data(
 def train_model(
         x: NDArray[np.float64],
         y: NDArray[np.float64],
-        theta: NDArray[np.float64]
-    ) -> tuple[float, float, list[float]]:
+        theta: NDArray[np.float64],
+        n: int
+    ) -> tuple[NDArray[np.float64], list[float]]:
 
     mean: float = x.mean()
     std: float = x.std()
 
     # standardisation (z-score)
-    X: NDArray[np.float64] = np.hstack((
-        (x - mean) / std,
+    X = np.hstack((
+        # (x - mean) / std,
+        x,
         np.ones((x.shape[0], 1))
     ))
 
-    print(f"x shape: {X.shape}\ny shape: {y.shape}\ntheta shape: {theta.shape}")
-    theta_final, cost_history = gradient_descent(
+    print(f"X shape: {X.shape}\nY shape: {y.shape}\ntheta shape: {theta.shape}")
+    final_theta, cost_history = gradient_descent(
         X,
         y,
         theta,
@@ -78,20 +108,17 @@ def train_model(
     #   -> y = (theta0' / std)x + (theta1' - (theta0'mean / std))   => y = ax + b
     # a = theta0' / std
     # b = theta1' - (theta0'mean / std)
-    theta0: float = theta_final[0, 0] / std
-    theta1: float = theta_final[1, 0] - theta_final[0, 0] * mean / std
 
-    return theta0, theta1, cost_history
+    return final_theta, cost_history
 
 
 def save_theta_in_file(
-        theta0: float,
-        theta1: float
+        theta: NDArray[np.float64]
     ) -> None:
 
     with THETA_FILE.open("w") as f:
-        f.write(f"{theta0}\n")
-        f.write(f"{theta1}\n")
+        for value in theta:
+            f.write(f"{value}\n")
 
 
 if __name__ == "__main__":
@@ -106,24 +133,19 @@ if __name__ == "__main__":
             sys.exit(1)
 
         number_of_examples: int = dataset.shape[0]
-        features = get_features(dataset)
-        number_of_features: int = len(features)
+        number_of_features = get_number_of_features(dataset)
 
         targets = get_targets(dataset)
-        for hogwarts_house in targets:
-            print("Prepare training data...")
-            x, y = prepare_training_data(dataset, hogwarts_house)
 
-            print("Train model...")
-            theta: NDArray[np.float64] = np.zeros((
-                number_of_features + 1,
-                1
-            ))
-            theta0, theta1, cost_history = train_model(x, y, theta)
+        for target in targets:
+            x, y = prepare_training_data(dataset, target)
+            initial_theta = initialize_theta(number_of_features)
 
-        # plot_cost_history(cost_history)
+            final_theta, cost_history = train_model(x, y, initial_theta, number_of_features)
 
-        save_theta_in_file(theta0, theta1)
+            # plot_cost_history(cost_history)
+
+            save_theta_in_file(final_theta)
 
     except Exception as error:
         print("Program exited with a fatal error.", error)
