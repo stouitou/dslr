@@ -5,14 +5,6 @@ from numpy.typing import NDArray
 from config import THETA_FILE, LEARNING_RATE, N_ITERATION
 from src.helpers.utils import load_csv_dataset
 from src.logistic_regression.logistic_regression import gradient_descent
-from src.logistic_regression.plot_data import plot_dataset, plot_cost_history
-from src.helpers.statistics import (
-    ft_max,
-    ft_mean,
-    ft_min,
-    ft_percentile,
-    ft_std
-)
 
 
 def get_features(
@@ -26,15 +18,6 @@ def get_features(
             features.append(column_name)
 
     return features
-
-
-def get_number_of_features(
-        dataset: pd.DataFrame
-    ) -> int:
-
-    features = get_features(dataset)
-
-    return len(features)
 
 
 def get_targets(
@@ -66,34 +49,29 @@ def prepare_training_data(
     if not required_column.issubset(dataset.columns):
         raise ValueError("dataset must contain 'Hogwarts House' column.")
 
-    features = get_features(dataset)
-    x = dataset[features].to_numpy()
-
     mask = dataset["Hogwarts House"] == hogwarts_house
     y = mask.to_numpy(dtype=np.float64)
     y = y.reshape(y.shape[0], 1)
 
-    return x, y
+    return y
 
 
 def train_model(
         x: NDArray[np.float64],
         y: NDArray[np.float64],
-        theta: NDArray[np.float64],
-        n: int
+        theta: NDArray[np.float64]
     ) -> tuple[NDArray[np.float64], list[float]]:
 
-    mean: float = x.mean()
-    std: float = x.std()
+    mean: NDArray[np.float64] = x.mean(axis=0)
+    std: NDArray[np.float64] = x.std(axis=0)
 
     # standardisation (z-score)
     X = np.hstack((
-        # (x - mean) / std,
-        x,
+        (x - mean) / std,
         np.ones((x.shape[0], 1))
     ))
 
-    print(f"X shape: {X.shape}\nY shape: {y.shape}\ntheta shape: {theta.shape}")
+    # print(f"X shape: {X.shape}\nY shape: {y.shape}\ntheta shape: {theta.shape}")
     final_theta, cost_history = gradient_descent(
         X,
         y,
@@ -113,39 +91,51 @@ def train_model(
 
 
 def save_theta_in_file(
+        features: list[str],
+        hogwarts_house: str,
         theta: NDArray[np.float64]
     ) -> None:
 
-    with THETA_FILE.open("w") as f:
-        for value in theta:
-            f.write(f"{value}\n")
+    header = ["House", *features, "Bias"]
+    if not THETA_FILE.exists():
+        with THETA_FILE.open("w") as f:
+            f.write(",".join(header) + "\n")
+    with THETA_FILE.open("a") as f:
+        values = [hogwarts_house, *(str(value.item()) for value in theta)]
+        f.write(",".join(values) + "\n")
+
+
+def main(
+        argc: int,
+        argv: list[str]
+    ) -> int:
+
+    if argc != 2:
+        print(f"Usage: {argv[0]} <dataset>.")
+        return 1
+
+    dataset: pd.DataFrame | None = load_csv_dataset(argv[1])
+    if dataset is None:
+        return 1
+
+    targets: list[str] = get_targets(dataset)
+    features: list[str] = get_features(dataset)
+
+    x = dataset[features].copy()
+    x = x.fillna(x.mean())
+    x = x.to_numpy()
+
+    for hogwarts_house in targets:
+        y = prepare_training_data(dataset, hogwarts_house)
+        initial_theta = initialize_theta(len(features))
+
+        final_theta, cost_history = train_model(x, y, initial_theta)
+
+        save_theta_in_file(features, hogwarts_house, final_theta)
+
+    return 0
 
 
 if __name__ == "__main__":
 
-    try:
-        if len(sys.argv) != 2:
-            print(f"Usage: {sys.argv[0]} <dataset>.")
-            sys.exit(1)
-
-        dataset: pd.DataFrame = load_csv_dataset(sys.argv[1])
-        if dataset is None:
-            sys.exit(1)
-
-        number_of_examples: int = dataset.shape[0]
-        number_of_features = get_number_of_features(dataset)
-
-        targets = get_targets(dataset)
-
-        for target in targets:
-            x, y = prepare_training_data(dataset, target)
-            initial_theta = initialize_theta(number_of_features)
-
-            final_theta, cost_history = train_model(x, y, initial_theta, number_of_features)
-
-            # plot_cost_history(cost_history)
-
-            save_theta_in_file(final_theta)
-
-    except Exception as error:
-        print("Program exited with a fatal error.", error)
+    sys.exit(main(len(sys.argv), sys.argv))
