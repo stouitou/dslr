@@ -50,7 +50,7 @@ def main(
         y: NDArray[np.float64] = get_binary_target(dataset, hogwarts_house)
         initial_theta: NDArray[np.float64] = initialize_theta(len(features))
 
-        standardized_theta, cost_history = train_model(
+        standardized_theta = train_model(
             x,
             y,
             initial_theta
