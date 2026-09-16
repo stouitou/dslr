@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 from numpy.typing import NDArray
+from src.helpers.output import get_theta_values
 
 
 def load_csv_dataset(
@@ -91,3 +92,25 @@ def get_binary_target(
     y = y.reshape(y.shape[0], 1)
 
     return y
+
+
+def prepare_prediction_data(
+        dataset: pd.DataFrame,
+        theta_file: Path
+    ) -> tuple[
+        NDArray[np.float64],
+        dict[str, NDArray[np.float64]] | None
+    ]:
+
+    features: list[str] = get_features(dataset)
+    x: NDArray[np.float64] = get_clean_data(dataset, features)
+    X: NDArray[np.float64] = np.hstack((
+        x,
+        np.ones((x.shape[0], 1))
+    ))
+    theta: dict[str, NDArray[np.float64]] | None = get_theta_values(
+        theta_file,
+        len(features)
+    )
+
+    return X, theta
