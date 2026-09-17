@@ -11,11 +11,11 @@ from src.helpers.output import (
     save_result_in_file
 )
 
-    
+
 def main(
         argc: int,
         argv: list[str]
-    ) -> int:
+) -> int:
 
     if argc != 3:
         print(f"Usage: {argv[0]} <dataset> <theta_file>.")

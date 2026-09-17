@@ -6,7 +6,7 @@ from config import THETA_FILE, RESULT_FILE
 
 def initialize_theta_file(
         features: list[str]
-    ) -> None:
+) -> None:
 
     with THETA_FILE.open("w") as file:
         header = [
@@ -20,7 +20,7 @@ def initialize_theta_file(
 def save_theta_in_file(
         hogwarts_house: str,
         theta: NDArray[np.float64]
-    ) -> None:
+) -> None:
 
     with THETA_FILE.open("a") as f:
         values: list[str] = [
@@ -32,7 +32,7 @@ def save_theta_in_file(
 def get_theta_values(
         theta_file: Path,
         n: int
-    ) -> dict[str, NDArray[np.float64]] | None:
+) -> dict[str, NDArray[np.float64]] | None:
 
     theta: dict[str, NDArray[np.float64]] = {}
     try:
@@ -40,7 +40,13 @@ def get_theta_values(
             f.readline()
             for line in f:
                 array = line.strip().split(",")
-                theta[array[0]] = np.array(array[1:], dtype=np.float64).reshape(n + 1, 1)
+                theta[array[0]] = np.array(
+                    array[1:],
+                    dtype=np.float64
+                ).reshape(
+                    n + 1,
+                    1
+                )
 
         return theta
 
@@ -50,7 +56,7 @@ def get_theta_values(
 
 
 def initialize_result_file(
-    ) -> None:
+) -> None:
 
     with RESULT_FILE.open("w") as file:
         header = [
@@ -63,7 +69,7 @@ def initialize_result_file(
 def save_result_in_file(
         index: int,
         hogwarts_house: str,
-    ) -> None:
+) -> None:
 
     with RESULT_FILE.open("a") as f:
         values: list[str] = [

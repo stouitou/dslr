@@ -1,10 +1,10 @@
-import sys
-import pandas as pd
 import numpy as np
+import pandas as pd
+import sys
 from numpy.typing import NDArray
+from config import RELEVANT_FEATURES
 from src.helpers.data import (
     load_csv_dataset,
-    get_features,
     get_targets,
     get_clean_data,
     standardize_data,
@@ -24,7 +24,7 @@ from src.helpers.output import (
 def main(
         argc: int,
         argv: list[str]
-    ) -> int:
+) -> int:
 
     if argc != 2:
         print(f"Usage: {argv[0]} <dataset>.")
@@ -34,21 +34,22 @@ def main(
     if dataset is None:
         return 1
 
-    required_column = { "Hogwarts House" }
+    required_column = {"Hogwarts House"}
     if not required_column.issubset(dataset.columns):
         print("Value error: Dataset must contain 'Hogwarts House' column.")
         return 1
 
     targets: list[str] = get_targets(dataset)
-    features: list[str] = get_features(dataset)
-    x: NDArray[np.float64] = get_clean_data(dataset, features)
+    x: NDArray[np.float64] = get_clean_data(dataset, RELEVANT_FEATURES)
     x, mean, std = standardize_data(x)
 
-    initialize_theta_file(features)
+    initialize_theta_file(RELEVANT_FEATURES)
 
     for hogwarts_house in targets:
         y: NDArray[np.float64] = get_binary_target(dataset, hogwarts_house)
-        initial_theta: NDArray[np.float64] = initialize_theta(len(features))
+        initial_theta: NDArray[np.float64] = initialize_theta(
+            len(RELEVANT_FEATURES)
+        )
 
         standardized_theta = train_model(
             x,

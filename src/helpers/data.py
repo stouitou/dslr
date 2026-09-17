@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from numpy.typing import NDArray
 from pathlib import Path
+from config import RELEVANT_FEATURES
 from src.helpers.output import get_theta_values
 
 
@@ -102,15 +103,14 @@ def prepare_prediction_data(
         dict[str, NDArray[np.float64]] | None
 ]:
 
-    features: list[str] = get_features(dataset)
-    x: NDArray[np.float64] = get_clean_data(dataset, features)
+    x: NDArray[np.float64] = get_clean_data(dataset, RELEVANT_FEATURES)
     X: NDArray[np.float64] = np.hstack((
         x,
         np.ones((x.shape[0], 1))
     ))
     theta: dict[str, NDArray[np.float64]] | None = get_theta_values(
         theta_file,
-        len(features)
+        len(RELEVANT_FEATURES)
     )
 
     return X, theta
