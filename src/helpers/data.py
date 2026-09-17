@@ -1,13 +1,13 @@
-from pathlib import Path
-import pandas as pd
 import numpy as np
+import pandas as pd
 from numpy.typing import NDArray
+from pathlib import Path
 from src.helpers.output import get_theta_values
 
 
 def load_csv_dataset(
         path: Path | str
-    ) -> pd.DataFrame | None:
+) -> pd.DataFrame | None:
 
     try:
         path = Path(path)
@@ -33,7 +33,7 @@ def load_csv_dataset(
 
 def get_features(
         dataset: pd.DataFrame
-    ) -> list[str]:
+) -> list[str]:
 
     features: list[str] = []
 
@@ -46,7 +46,7 @@ def get_features(
 
 def get_targets(
         dataset: pd.DataFrame
-    ) -> list[str]:
+) -> list[str]:
 
     labels: pd.Series = dataset["Hogwarts House"]
     targets: list[str] = list(np.unique(labels))
@@ -57,7 +57,7 @@ def get_targets(
 def get_clean_data(
         dataset: pd.DataFrame,
         features: list[str]
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     data: pd.DataFrame = dataset[features].copy()
     clean_data: pd.DataFrame = data.fillna(data.mean())
@@ -67,11 +67,11 @@ def get_clean_data(
 
 def standardize_data(
         data: NDArray[np.float64]
-    ) -> tuple[
+) -> tuple[
         NDArray[np.float64],
         NDArray[np.float64],
         NDArray[np.float64]
-    ]:
+]:
     """Standardisation: z-score"""
 
     mean: NDArray[np.float64] = data.mean(axis=0)
@@ -85,7 +85,7 @@ def standardize_data(
 def get_binary_target(
         dataset: pd.DataFrame,
         hogwarts_house: str
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     mask: pd.Series = dataset["Hogwarts House"] == hogwarts_house
     y: NDArray[np.float64] = mask.to_numpy(dtype=np.float64)
@@ -97,10 +97,10 @@ def get_binary_target(
 def prepare_prediction_data(
         dataset: pd.DataFrame,
         theta_file: Path
-    ) -> tuple[
+) -> tuple[
         NDArray[np.float64],
         dict[str, NDArray[np.float64]] | None
-    ]:
+]:
 
     features: list[str] = get_features(dataset)
     x: NDArray[np.float64] = get_clean_data(dataset, features)
