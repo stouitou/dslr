@@ -20,6 +20,7 @@ from src.helpers.output import (
     save_theta_in_file
 )
 from src.helpers.plotting import plot_cost_history
+from src.helpers.confusion_matrix import plot_confusion_matrix
 
 
 def main(
@@ -73,6 +74,7 @@ def main(
         )
 
     plot_cost_history(cost_history)
+    plot_confusion_matrix(dataset, targets)
 
     return 0
 

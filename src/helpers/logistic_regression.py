@@ -1,6 +1,6 @@
 import numpy as np
 from numpy.typing import NDArray
-from config import LEARNING_RATE, N_ITERATION
+from config import N_EPOCHS, N_ITERATION
 
 
 def initialize_theta(
@@ -102,7 +102,7 @@ def train_model(
         X,
         y,
         theta,
-        learning_rate=LEARNING_RATE,
+        learning_rate=N_EPOCHS,
         n_iteration=N_ITERATION
     )
 
