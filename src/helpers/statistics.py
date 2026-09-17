@@ -61,6 +61,27 @@ def ft_mean(
     return result
 
 
+def ft_median(
+        args: list[int | float]
+) -> float | None:
+    """Calculate the median of a list of numbers."""
+
+    if not all(isinstance(x, (int, float)) for x in args):
+        raise TypeError("Non numeric value in list")
+
+    if not args:
+        print('ERROR')
+        return None
+
+    sort = sorted(args)
+    n = len(sort)
+    mid = n // 2
+    if n % 2 == 0:
+        return (sort[mid - 1] + sort[mid]) / 2
+    else:
+        return sort[mid]
+
+
 def ft_percentile(
         args: list[int | float]
 ) -> list | None:
@@ -131,12 +152,29 @@ def ft_std(
     return result
 
 
+def ft_range(
+        args: list[int | float]
+) -> float | None:
+
+    if not all(isinstance(x, (int, float)) for x in args):
+        raise TypeError("Non numeric value in list")
+
+    if not args:
+        print('ERROR')
+        return None
+
+    minimum = ft_min(args)
+    maximum = ft_max(args)
+
+    return maximum - minimum
+
+
 def get_statistics(
         dataset: pd.DataFrame
 ) -> dict[str, list[str | float]] | None:
 
     statistics: dict[str, list[str | float]] = {
-        "": ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]
+        "": ["count", "mean", "var", "std", "min", "25%", "50%", "75%", "max", "rge"]
     }
 
     try:
@@ -158,12 +196,14 @@ def get_statistics(
             statistics[subject] = [
                 len(non_null_values),
                 ft_mean(data),
+                ft_var(data),
                 ft_std(data),
                 ft_min(data),
                 percentiles[0],
                 percentiles[1],
                 percentiles[2],
-                ft_max(data)
+                ft_max(data),
+                ft_range(data)
             ]
 
         return statistics
