@@ -19,6 +19,7 @@ from src.helpers.output import (
     initialize_theta_file,
     save_theta_in_file
 )
+from src.helpers.plotting import plot_cost_history
 
 
 def main(
@@ -45,17 +46,21 @@ def main(
 
     initialize_theta_file(RELEVANT_FEATURES)
 
+    cost_history: dict[str, list[float]] = {}
+
     for hogwarts_house in targets:
         y: NDArray[np.float64] = get_binary_target(dataset, hogwarts_house)
         initial_theta: NDArray[np.float64] = initialize_theta(
             len(RELEVANT_FEATURES)
         )
 
-        standardized_theta = train_model(
+        standardized_theta, history = train_model(
             x,
             y,
             initial_theta
         )
+
+        cost_history[hogwarts_house] = history
 
         final_theta = destandardize_theta(
             standardized_theta,
@@ -66,6 +71,8 @@ def main(
             hogwarts_house,
             final_theta
         )
+
+    plot_cost_history(cost_history)
 
     return 0
 

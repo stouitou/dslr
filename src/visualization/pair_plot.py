@@ -20,13 +20,12 @@ def main(
     if dataset is None:
         return 1
 
-    data, features, labels, colormap = prepare_plot_data(dataset)
+    data, features, labels = prepare_plot_data(dataset)
 
     create_pair_plot(
         data,
         features,
         labels,
-        colormap
     )
 
     return 0
