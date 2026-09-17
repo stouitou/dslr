@@ -3,21 +3,21 @@ import numpy as np
 import pandas as pd
 from matplotlib import axes
 from numpy.typing import NDArray
+from config import COLORMAP
 from src.helpers.data import get_features
 
 
 def plot_histogram(
         ax: axes,
         x_values: np.ndarray,
-        labels: np.ndarray,
-        colormap: dict[str, str]
+        labels: np.ndarray
 ) -> None:
 
-    for label in colormap:
+    for label in COLORMAP:
         mask = labels == label
         ax.hist(
             x_values[mask],
-            color=colormap[label],
+            color=COLORMAP[label],
             bins=15,
             alpha=0.6
             )
@@ -27,16 +27,15 @@ def plot_scatter(
         ax: axes,
         x_values: np.ndarray,
         y_values: np.ndarray,
-        labels: np.ndarray,
-        colormap: dict[str, str]
+        labels: np.ndarray
 ) -> None:
 
-    for label in colormap:
+    for label in COLORMAP:
         mask = labels == label
         ax.scatter(
             x=x_values[mask],
             y=y_values[mask],
-            color=colormap[label],
+            color=COLORMAP[label],
             label=label,
             s=2,
             alpha=0.6
@@ -73,8 +72,7 @@ def plot_single_pair(
         x_values: np.ndarray,
         y_values: np.ndarray,
         features: list[str],
-        labels: np.ndarray,
-        colormap: dict[str, str]
+        labels: np.ndarray
 ) -> None:
 
     if feature_index_1 == feature_index_2:
@@ -82,7 +80,6 @@ def plot_single_pair(
             axis,
             x_values,
             labels,
-            colormap
         )
     else:
         plot_scatter(
@@ -90,7 +87,6 @@ def plot_single_pair(
             x_values,
             y_values,
             labels,
-            colormap
         )
 
     axis.set_xticks([])
@@ -107,8 +103,7 @@ def plot_single_pair(
 def create_pair_plot(
         data: dict[str, np.ndarray],
         features: list[str],
-        labels: np.ndarray,
-        colormap: dict[str, str]
+        labels: np.ndarray
 ) -> None:
 
     feature_count = len(features)
@@ -132,7 +127,6 @@ def create_pair_plot(
                 feature_y,
                 features,
                 labels,
-                colormap
             )
 
     plt.subplots_adjust(
@@ -161,11 +155,23 @@ def prepare_plot_data(
 
     labels = dataset["Hogwarts House"].to_numpy()
 
-    colormap = {
-        "Gryffindor": "red",
-        "Hufflepuff": "yellow",
-        "Ravenclaw": "blue",
-        "Slytherin": "green"
-    }
+    return data, features, labels
 
-    return data, features, labels, colormap
+
+def plot_cost_history(
+        cost_history: dict[str, list[float]]
+) -> None:
+
+    for hogwarts_house, history in cost_history.items():
+        plt.plot(
+            history,
+            label=hogwarts_house,
+            color=COLORMAP[hogwarts_house]
+        )
+
+    plt.title("Learning curves")
+    plt.xlabel("Iterations")
+    plt.ylabel("Cross Enthropy Loss")
+    plt.legend()
+
+    plt.show()

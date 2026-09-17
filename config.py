@@ -6,9 +6,15 @@ DATA: Path = ROOT / "data"
 THETA_FILE: Path = DATA / "theta.csv"
 RESULT_FILE: Path = DATA / "houses.csv"
 
-LEARNING_RATE = 0.03
-N_ITERATION = 500
+LEARNING_RATE = 0.1
+N_ITERATION = 800
 
+COLORMAP = {
+        "Gryffindor": "red",
+        "Hufflepuff": "yellow",
+        "Ravenclaw": "blue",
+        "Slytherin": "green"
+}
 RELEVANT_FEATURES = [
         "Astronomy",
         "Herbology",

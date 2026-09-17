@@ -74,14 +74,17 @@ def gradient_descent(
         X: NDArray[np.float64],
         y: NDArray[np.float64],
         theta: NDArray[np.float64],
-        learning_rate: float = 0.01,
+        learning_rate: float = 0.1,
         n_iteration: int = 1000
 ) -> tuple[NDArray[np.float64], list[float]]:
 
+    cost_history: list[float] = []
+
     for _ in range(n_iteration):
         theta -= learning_rate * gradient(X, y, theta)
+        cost_history.append(cross_enthropy_loss(X, y, theta))
 
-    return theta
+    return theta, cost_history
 
 
 def train_model(
@@ -95,7 +98,7 @@ def train_model(
         np.ones((x.shape[0], 1))
     ))
 
-    final_theta = gradient_descent(
+    final_theta, cost_history = gradient_descent(
         X,
         y,
         theta,
@@ -103,4 +106,4 @@ def train_model(
         n_iteration=N_ITERATION
     )
 
-    return final_theta
+    return final_theta, cost_history
