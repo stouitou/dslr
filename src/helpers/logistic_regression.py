@@ -5,7 +5,7 @@ from config import LEARNING_RATE, N_ITERATION
 
 def initialize_theta(
         n: int
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     return np.zeros((
         n + 1,
@@ -17,7 +17,7 @@ def destandardize_theta(
         standardized_theta: NDArray[np.float64],
         mean: NDArray[np.float64],
         std: NDArray[np.float64]
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     theta = standardized_theta.ravel()
     theta_features = theta[:-1]
@@ -33,7 +33,7 @@ def destandardize_theta(
 
 def sigmoid(
         z: NDArray[np.float64]
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     return 1 / (1 + np.e ** -z)
 
@@ -41,7 +41,7 @@ def sigmoid(
 def model(
         X: NDArray[np.float64],
         theta: NDArray[np.float64]
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     return sigmoid((X).dot(theta))
 
@@ -50,19 +50,20 @@ def cross_enthropy_loss(
         X: NDArray[np.float64],
         y: NDArray[np.float64],
         theta: NDArray[np.float64]
-    ) -> float:
+) -> float:
 
     m = len(y)
     predictions = model(X, theta)
 
-    return -1 / m * np.sum(y * np.log(predictions) + (1 - y) * np.log(1 - predictions))
+    return -1 / m * \
+        np.sum(y * np.log(predictions) + (1 - y) * np.log(1 - predictions))
 
 
 def gradient(
         X: NDArray[np.float64],
         y: NDArray[np.float64],
         theta: NDArray[np.float64]
-    ) -> NDArray[np.float64]:
+) -> NDArray[np.float64]:
 
     m = len(y)
 
@@ -75,11 +76,11 @@ def gradient_descent(
         theta: NDArray[np.float64],
         learning_rate: float = 0.01,
         n_iteration: int = 1000
-    ) -> tuple[NDArray[np.float64], list[float]]:
+) -> tuple[NDArray[np.float64], list[float]]:
 
     for _ in range(n_iteration):
         theta -= learning_rate * gradient(X, y, theta)
-    
+
     return theta
 
 
@@ -87,7 +88,7 @@ def train_model(
         x: NDArray[np.float64],
         y: NDArray[np.float64],
         theta: NDArray[np.float64]
-    ) -> tuple[NDArray[np.float64], list[float]]:
+) -> tuple[NDArray[np.float64], list[float]]:
 
     X = np.hstack((
         x,
