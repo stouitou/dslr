@@ -174,7 +174,18 @@ def get_statistics(
 ) -> dict[str, list[str | float]] | None:
 
     statistics: dict[str, list[str | float]] = {
-        "": ["count", "mean", "var", "std", "min", "25%", "50%", "75%", "max", "rge"]
+        "": [
+            "count",
+            "mean",
+            "var",
+            "std",
+            "min",
+            "25%",
+            "50%",
+            "75%",
+            "max",
+            "rge"
+        ]
     }
 
     try:

@@ -6,7 +6,7 @@ DATA: Path = ROOT / "data"
 THETA_FILE: Path = DATA / "theta.csv"
 RESULT_FILE: Path = DATA / "houses.csv"
 
-LEARNING_RATE = 0.1
+N_EPOCHS = 0.1
 N_ITERATION = 800
 
 COLORMAP = {
