@@ -24,3 +24,7 @@ V. 3 Logistic Regression :
                 [...]
 
 Your classifier will be evaluated on the data present in dataset_test.csv. Your answers will be evaluated using the accuracy score from the Scikit-Learn library. Professor McGonagall agrees that your algorithm is comparable to the Sorting Hat only if it has a minimum accuracy score of 98%.
+
+enthropy:
+H = -sum(p(x)logp(x))
+En d'autres termes, l'entropie croisée mesure la différence entre la distribution de probabilité découverte d'un modèle de classification et les valeurs prédites.
