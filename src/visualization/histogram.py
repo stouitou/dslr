@@ -2,9 +2,9 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from src.helpers.utils import load_csv_dataset
+from config import COLORMAP
+from src.helpers.data import get_features, load_csv_dataset
 from src.helpers.statistics import ft_max, ft_mean, ft_min, ft_std
-from src.helpers.plotting import HOUSE_COLORS, get_features
 
 
 BIN_COUNT = 20
@@ -45,7 +45,7 @@ def plot_feature_histogram(
     ) -> None:
     """Superpose les distributions des quatre maisons pour une matière."""
 
-    for house, color in HOUSE_COLORS.items():
+    for house, color in COLORMAP.items():
         # Un élève est retenu s'il est de cette maison ET a bien une note.
         mask = (labels == house) & ~np.isnan(values)
 
@@ -86,7 +86,7 @@ def get_homogeneity_score(
     """
 
     house_means = []
-    for house in HOUSE_COLORS:
+    for house in COLORMAP:
         mask = (labels == house) & ~np.isnan(values)
         house_values = list(values[mask])
         if not house_values:

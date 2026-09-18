@@ -2,9 +2,9 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from src.helpers.utils import load_csv_dataset
+from config import COLORMAP
+from src.helpers.data import get_features, load_csv_dataset
 from src.helpers.statistics import ft_mean, ft_std
-from src.helpers.plotting import HOUSE_COLORS, get_features
 
 
 RANKING_SIZE = 5
@@ -117,7 +117,7 @@ def create_scatter_plot(
 
     figure, axis = plt.subplots(figsize=(10, 8))
 
-    for house, color in HOUSE_COLORS.items():
+    for house, color in COLORMAP.items():
         mask = (
             (labels == house)
             & ~np.isnan(values_1)
