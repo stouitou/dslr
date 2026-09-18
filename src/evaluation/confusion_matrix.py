@@ -155,7 +155,6 @@ def display_confusion_matrix(
     plot_confusion_matrix(confusion_matrix, targets)
 
 
-
 def main(
         argc: int,
         argv: list[str]
