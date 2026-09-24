@@ -14,22 +14,12 @@ GRID_COLUMNS = 4
 def get_feature_bounds(
         values: np.ndarray
     ) -> tuple[float, float] | None:
-    """Bornes min/max d'une matière, toutes maisons confondues.
-
-    Ces bornes servent à imposer le MÊME découpage en barres aux quatre
-    maisons. Sans elles, matplotlib recalcule les bornes à chaque appel
-    de hist() sur les seules données de la maison tracée : les quatre
-    découpages diffèrent, les barres ne s'alignent plus, et la
-    comparaison visuelle devient fausse.
-
-    On écarte les NaN avant le calcul : une comparaison avec NaN est
-    toujours fausse, donc ft_min renverrait sa valeur de départ si la
-    première note était manquante.
-
-    ft_min / ft_max (nos implémentations) plutôt que les builtins, pour
-    rester cohérents avec le reste du projet.
+    """Bornes min/max d'une matière, pour imposer le même découpage en
+    barres aux quatre maisons (sinon elles ne s'alignent pas).
     """
 
+    # NaN écartés avant le calcul : toute comparaison avec NaN étant
+    # fausse, ft_min renverrait NaN si la première note manquait.
     known_values = list(values[~np.isnan(values)])
     if not known_values:
         return None
@@ -53,11 +43,8 @@ def plot_feature_histogram(
             values[mask],
             bins=BIN_COUNT,
             range=bounds,
-            # density=True normalise l'aire de chaque histogramme à 1.
-            # Indispensable ici : les maisons sont déséquilibrées
-            # (529 Hufflepuff contre 301 Slytherin). Sans ça, on
-            # comparerait des tailles de maison au lieu de comparer des
-            # distributions de notes.
+            # Aire ramenée à 1 : les maisons sont déséquilibrées (529
+            # Hufflepuff contre 301 Slytherin), on compare des formes.
             density=True,
             color=color,
             alpha=0.5,
@@ -69,20 +56,10 @@ def get_homogeneity_score(
         values: np.ndarray,
         labels: np.ndarray
     ) -> float | None:
-    """Mesure à quel point les quatre maisons se ressemblent.
+    """Dispersion des 4 moyennes de maison / dispersion de la matière.
 
-    score = écart-type des 4 moyennes de maison
-            / écart-type de toutes les notes de la matière
-
-    Le numérateur mesure la séparation des maisons, le dénominateur la
-    dispersion naturelle de la matière. Leur rapport est sans dimension :
-    c'est ce qui rend les 13 matières comparables entre elles, alors que
-    leurs échelles n'ont rien à voir (Arithmancy se compte en dizaines de
-    milliers, Care of Magical Creatures en unités). Comparer des écarts
-    de moyennes bruts ne mesurerait que l'unité de notation.
-
-    Score proche de 0 : les maisons ont la même moyenne -> homogène.
-    Score élevé : les maisons sont séparées -> matière discriminante.
+    Sans dimension, donc comparable entre matières. Proche de 0 :
+    homogène. Proche de 1 : discriminante.
     """
 
     house_means = []
@@ -154,8 +131,7 @@ def create_histogram_grid(
         plot_feature_histogram(axis, values, labels, bounds)
 
         axis.set_title(feature, fontsize=9)
-        # Les valeurs absolues n'apportent rien : ce qu'on lit ici, c'est
-        # le degré de superposition des quatre courbes.
+        # Seule la superposition des courbes compte, pas les valeurs.
         axis.set_xticks([])
         axis.set_yticks([])
 
@@ -195,8 +171,7 @@ if __name__ == "__main__":
         }
         labels = np.array(dataset["Hogwarts House"])
 
-        # Affiche avant d'ouvrir la fenêtre : plt.show() bloque le
-        # programme jusqu'à ce qu'elle soit fermée.
+        # Avant plt.show(), qui bloque jusqu'à fermeture de la fenêtre.
         print_homogeneity_ranking(data, features, labels)
 
         create_histogram_grid(data, features, labels)
