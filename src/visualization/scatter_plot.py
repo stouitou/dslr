@@ -14,21 +14,9 @@ def ft_correlation(
         values_1: np.ndarray,
         values_2: np.ndarray
     ) -> float | None:
-    """Coefficient de corrélation de Pearson entre deux matières.
+    """Corrélation de Pearson : covariance / (écart-type × écart-type).
 
-        r = covariance(X, Y) / (écart-type(X) × écart-type(Y))
-
-    Le numérateur mesure à quel point les deux matières varient ensemble ;
-    diviser par les deux écarts-types rend le résultat sans dimension, donc
-    comparable d'un couple à l'autre malgré des échelles très différentes.
-
-    r vaut toujours entre -1 et 1 :
-      |r| = 1 -> les points sont parfaitement alignés sur une droite,
-      r  proche de 0 -> aucune relation linéaire,
-      le signe donne le sens de la pente.
-
-    La covariance est divisée par n - 1, comme ft_var, pour rester
-    cohérent avec ft_std utilisé juste après.
+    Sans dimension, entre -1 et 1. |r| = 1 : points parfaitement alignés.
     """
 
     # Une paire n'est exploitable que si l'élève a ses DEUX notes.
@@ -58,19 +46,15 @@ def get_correlated_pairs(
         data: dict[str, np.ndarray],
         features: list[str]
     ) -> list[tuple[float, float, str, str]]:
-    """Toutes les paires de matières, triées par similarité décroissante.
+    """Toutes les paires, triées par similarité décroissante.
 
-    Le tri se fait sur |r| et non sur r : deux matières parfaitement
-    anti-corrélées (r = -1) portent la même information que deux matières
-    parfaitement corrélées (r = 1), au signe près. Trier sur r brut
-    enverrait le couple le plus similaire en dernière position.
+    Tri sur |r| : r = -1 est aussi similaire que r = +1, au signe près.
     """
 
     pairs = []
 
     for i in range(len(features)):
-        # j commence à i + 1 : une paire ne se compte qu'une fois, et on
-        # ne compare pas une matière avec elle-même (r vaudrait 1).
+        # j > i : chaque paire une seule fois, jamais avec elle-même.
         for j in range(i + 1, len(features)):
             feature_1 = features[i]
             feature_2 = features[j]

@@ -1,2 +1,8 @@
 .venv
 __pycache__/
+
+# Fichiers générés par les programmes, reproductibles en les relançant.
+data/theta.csv
+data/theta_sgd.csv
+data/houses.csv
+data/houses_SGD.csv
