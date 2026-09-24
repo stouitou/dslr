@@ -35,11 +35,19 @@ def get_theta_values(
 ) -> dict[str, NDArray[np.float64]] | None:
 
     theta: dict[str, NDArray[np.float64]] = {}
+
     try:
         with theta_file.open() as f:
-            f.readline()
+            header = f.readline().strip().split(",")
+
+            if len(header) != n + 2:
+                raise ValueError("Invalid theta file format.")
+
             for line in f:
                 array = line.strip().split(",")
+                if len(array) != n + 2:
+                    raise ValueError("Invalid theta file format.")
+
                 theta[array[0]] = np.array(
                     array[1:],
                     dtype=np.float64
@@ -50,8 +58,8 @@ def get_theta_values(
 
         return theta
 
-    except OSError as error:
-        print(error)
+    except (OSError, ValueError) as error:
+        print(f"Error: {error}")
         return None
 
 
