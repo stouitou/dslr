@@ -18,9 +18,7 @@ COLORMAP = {
 RELEVANT_FEATURES = [
         "Astronomy",
         "Herbology",
-        "Defense Against the Dark Arts",
-        "Ancient Runes",
-        "Charms"
+        "Ancient Runes"
 ]
 
 # --- Bonus : stochastic gradient descent ---------------------------------
