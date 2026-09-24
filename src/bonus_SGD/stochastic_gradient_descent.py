@@ -26,7 +26,7 @@ def stochastic_gradient_descent(
 
         for i in order:
             # X[i:i+1] et non X[i] : garde 2 dimensions, sinon le X.T
-            # de gradient() ne transpose rien et le calcul est faux.
+            # de gradient() ne transpose rien et le produit échoue.
             theta -= learning_rate * gradient(
                 X[i:i + 1],
                 y[i:i + 1],
