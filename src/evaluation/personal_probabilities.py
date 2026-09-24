@@ -80,9 +80,7 @@ def plot_student_probability(
     ax.set_ylim(0, 1.02)
     ax.yaxis.set_major_formatter(PercentFormatter(1))
     ax.set_xticklabels(
-        short_house_names,
-        rotation=45,
-        ha="right"
+        short_house_names
     )
     ax.set_title(f"Student {student_id}")
 
@@ -101,7 +99,7 @@ def display_probability(
         ambiguous_students: dict[int, dict[str, float]]
 ) -> None:
 
-    ncols = 5
+    ncols = 8
     nrows = (len(ambiguous_students) + ncols - 1) // ncols
 
     house_names = list(next(iter(ambiguous_students.values())).keys())
