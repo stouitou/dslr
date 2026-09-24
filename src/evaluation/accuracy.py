@@ -1,7 +1,5 @@
-import numpy as np
 import pandas as pd
 import sys
-from numpy.typing import NDArray
 from src.helpers.data import (
     get_targets,
     load_csv_dataset,

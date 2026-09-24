@@ -1,10 +1,8 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import sys
 from matplotlib import axes
 from matplotlib.colors import LogNorm
-from numpy.typing import NDArray
 from src.helpers.data import (
     get_targets,
     load_csv_dataset,
