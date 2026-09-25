@@ -26,40 +26,42 @@ Installe pandas, tabulate et matplotlib (numpy arrive en dépendance).
 ### V.1 — Data Analysis
 
 ```bash
-./describe data/dataset_train.csv
+./scripts/describe data/dataset_train.csv
 ```
 Affiche count / mean / std / min / 25% / 50% / 75% / max des 13 matières,
 avec nos propres fonctions statistiques.
+Affiche var / range en plus pour les bonus
 
 ### V.2 — Data Visualization
 
 ```bash
-./histogram data/dataset_train.csv
+./scripts/histogram data/dataset_train.csv
 ```
 Classement d'homogénéité en console, puis grille des 13 matières.
 **Réponse : Arithmancy** (0.0292, contre 0.8876 pour la 3e).
 
 ```bash
-./scatter_plot data/dataset_train.csv
+./scripts/scatter_plot data/dataset_train.csv
 ```
 Classement des corrélations, puis nuage du couple le plus similaire.
 **Réponse : Astronomy / Defense Against the Dark Arts**, r = -1.0000.
 
 ```bash
-./pair_plot data/dataset_train.csv
+./scripts/pair_plot data/dataset_train.csv
 ```
 Matrice 13×13 de toutes les paires. Sert à choisir les features.
+**Réponse : Astronomy / Herbology / Ancient Runes**, nuages separes
 
 ### V.3 — Logistic Regression
 
 ```bash
-./logreg_train data/dataset_train.csv
+./scripts/logreg_train data/dataset_train.csv
 ```
 Entraîne les 4 classifieurs one-vs-all par **batch** gradient descent
 (800 itérations), écrit `data/theta.csv`, affiche les learning curves.
 
 ```bash
-./logreg_predict data/dataset_test.csv data/theta.csv
+./scripts/logreg_predict data/dataset_test.csv data/theta.csv
 ```
 Prédit les maisons des 400 élèves du jeu de test → `data/houses.csv`.
 
@@ -77,22 +79,29 @@ Vérifie le format imposé (`Index,Hogwarts House`) et le compte (401 lignes).
 > `dataset_train.csv` d'abord.
 
 ```bash
-./logreg_predict data/dataset_train.csv data/theta.csv
+./scripts/logreg_predict data/dataset_train.csv data/theta.csv
 ```
 Rejoue la prédiction, cette fois sur le jeu d'entraînement.
 
 ```bash
-python -m src.evaluation.confusion_matrix data/dataset_train.csv data/houses.csv
+./scripts/accuracy data/dataset_train.csv data/houses.csv
+```
+**Le chiffre que le sujet exige** : le pourcentage de prédictions correctes.
+Seuil à atteindre : 98 %. ⚠️ Mesuré ici sur les élèves d'entraînement, donc
+optimiste — le modèle les a déjà vus.
+
+```bash
+./scripts/confusion_matrix data/dataset_train.csv data/houses.csv
 ```
 Compare prédictions et vérité : montre où le modèle se trompe, maison par maison.
 
 ```bash
-python -m src.evaluation.personal_probabilities data/dataset_train.csv data/theta.csv
+./scripts/personal_probabilities data/dataset_train.csv data/theta.csv
 ```
 Affiche les probabilités des 4 maisons pour les élèves ambigus.
 
 ```bash
-./logreg_predict data/dataset_test.csv data/theta.csv
+./scripts/logreg_predict data/dataset_test.csv data/theta.csv
 ```
 Remet `houses.csv` dans son état normal (prédictions sur le jeu de test).
 
@@ -107,27 +116,27 @@ Remet `houses.csv` dans son état normal (prédictions sur le jeu de test).
 ### Stochastic gradient descent
 
 ```bash
-./logreg_train_bonus --sgd data/dataset_train.csv
+./scripts/logreg_train_bonus --sgd data/dataset_train.csv
 ```
 Corrige theta **après chaque élève** : 1600 corrections par epoch au lieu
 d'une. 20 epochs suffisent, contre 800 itérations pour le batch.
 Écrit `data/theta_sgd.csv`.
 
 ```bash
-./logreg_predict_bonus --sgd data/dataset_test.csv data/theta_sgd.csv
+./scripts/logreg_predict_bonus --sgd data/dataset_test.csv data/theta_sgd.csv
 ```
 Prédit avec ces poids → `data/houses_SGD.csv`.
 
 ### Mini-batch gradient descent
 
 ```bash
-./logreg_train_bonus --mbgd data/dataset_train.csv
+./scripts/logreg_train_bonus --mbgd data/dataset_train.csv
 ```
 Le compromis : corrige après chaque **paquet de 32 élèves**, soit 50
 corrections par epoch. Écrit `data/theta_mbgd.csv`.
 
 ```bash
-./logreg_predict_bonus --mbgd data/dataset_test.csv data/theta_mbgd.csv
+./scripts/logreg_predict_bonus --mbgd data/dataset_test.csv data/theta_mbgd.csv
 ```
 Prédit avec ces poids → `data/houses_MBGD.csv`.
 

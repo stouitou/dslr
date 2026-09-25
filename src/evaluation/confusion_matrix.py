@@ -1,54 +1,13 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import sys
 from matplotlib import axes
 from matplotlib.colors import LogNorm
-from numpy.typing import NDArray
 from src.helpers.data import (
     get_targets,
-    load_csv_dataset
+    load_csv_dataset,
+    prepare_evaluation_data
 )
-
-
-def get_confusion_matrix_data(
-        dataset_truth: pd.DataFrame,
-        dataset_prediction: pd.DataFrame,
-        targets: list[str]
-) -> tuple[NDArray[np.str_], NDArray[np.str_]]:
-
-    target = "Hogwarts House"
-
-    if target not in dataset_truth.columns:
-        raise ValueError(
-            f"'{target}' column is missing from truth dataset."
-        )
-
-    if dataset_truth[target].isna().any():
-        raise ValueError(
-            f"One or more values in the '{target}' column are missing."
-        )
-
-    if target not in dataset_prediction.columns:
-        raise ValueError(
-            f"'{target}' column is missing from prediction dataset."
-        )
-
-    truth = dataset_truth[target].to_numpy()
-    prediction = dataset_prediction[target].to_numpy()
-
-    if len(truth) != len(prediction):
-        raise ValueError(
-            "Truth and prediction datasets have different numbers of rows."
-        )
-
-    invalid_predictions = set(prediction) - set(targets)
-    if invalid_predictions:
-        raise ValueError(
-            f"Unknown prediction classes: {invalid_predictions}"
-        )
-
-    return truth, prediction
 
 
 def initiate_confusion_matrix(
@@ -137,7 +96,7 @@ def display_confusion_matrix(
         targets: list[str]
 ) -> None:
 
-    y_true, y_predicted = get_confusion_matrix_data(
+    y_true, y_predicted = prepare_evaluation_data(
         dataset_truth,
         dataset_prediction,
         targets
