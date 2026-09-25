@@ -13,7 +13,7 @@ GRID_COLUMNS = 4
 
 def get_feature_bounds(
         values: np.ndarray
-    ) -> tuple[float, float] | None:
+) -> tuple[float, float] | None:
     """Bornes min/max d'une matière, pour imposer le même découpage en
     barres aux quatre maisons (sinon elles ne s'alignent pas).
     """
@@ -32,7 +32,7 @@ def plot_feature_histogram(
         values: np.ndarray,
         labels: np.ndarray,
         bounds: tuple[float, float]
-    ) -> None:
+) -> None:
     """Superpose les distributions des quatre maisons pour une matière."""
 
     for house, color in COLORMAP.items():
@@ -55,7 +55,7 @@ def plot_feature_histogram(
 def get_homogeneity_score(
         values: np.ndarray,
         labels: np.ndarray
-    ) -> float | None:
+) -> float | None:
     """Dispersion des 4 moyennes de maison / dispersion de la matière.
 
     Sans dimension, donc comparable entre matières. Proche de 0 :
@@ -82,7 +82,7 @@ def print_homogeneity_ranking(
         data: dict[str, np.ndarray],
         features: list[str],
         labels: np.ndarray
-    ) -> None:
+) -> None:
     """Classe les matières de la plus homogène à la plus discriminante."""
 
     scores = []
@@ -107,7 +107,7 @@ def create_histogram_grid(
         data: dict[str, np.ndarray],
         features: list[str],
         labels: np.ndarray
-    ) -> None:
+) -> None:
     """Affiche une grille d'histogrammes, une case par matière."""
 
     row_count = (len(features) + GRID_COLUMNS - 1) // GRID_COLUMNS

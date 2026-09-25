@@ -13,7 +13,7 @@ RANKING_SIZE = 5
 def ft_correlation(
         values_1: np.ndarray,
         values_2: np.ndarray
-    ) -> float | None:
+) -> float | None:
     """Corrélation de Pearson : covariance / (écart-type × écart-type).
 
     Sans dimension, entre -1 et 1. |r| = 1 : points parfaitement alignés.
@@ -45,7 +45,7 @@ def ft_correlation(
 def get_correlated_pairs(
         data: dict[str, np.ndarray],
         features: list[str]
-    ) -> list[tuple[float, float, str, str]]:
+) -> list[tuple[float, float, str, str]]:
     """Toutes les paires, triées par similarité décroissante.
 
     Tri sur |r| : r = -1 est aussi similaire que r = +1, au signe près.
@@ -72,7 +72,7 @@ def get_correlated_pairs(
 
 def print_correlation_ranking(
         pairs: list[tuple[float, float, str, str]]
-    ) -> None:
+) -> None:
     """Affiche les couples de matières les plus similaires."""
 
     print("\nCouples de matières les plus similaires")
@@ -93,7 +93,7 @@ def create_scatter_plot(
         feature_2: str,
         labels: np.ndarray,
         correlation: float
-    ) -> None:
+) -> None:
     """Nuage de points du couple de matières le plus similaire."""
 
     values_1 = data[feature_1]

@@ -65,11 +65,6 @@ Entraîne les 4 classifieurs one-vs-all par **batch** gradient descent
 ```
 Prédit les maisons des 400 élèves du jeu de test → `data/houses.csv`.
 
-```bash
-head -5 data/houses.csv && wc -l data/houses.csv
-```
-Vérifie le format imposé (`Index,Hogwarts House`) et le compte (401 lignes).
-
 ---
 
 ## 2. Bonus — Évaluation du modèle
@@ -148,24 +143,3 @@ diff data/houses.csv data/houses_SGD.csv
 ```bash
 diff data/houses.csv data/houses_MBGD.csv
 ```
-**Aucune sortie = prédictions identiques** à celles du batch. C'est la
-validation des bonus.
-
-```bash
-diff data/theta.csv data/theta_sgd.csv
-```
-Montre que les poids, eux, **diffèrent** — donc que la comparaison
-précédente a bien du sens.
-
----
-
-## Les trois descentes en un tableau
-
-| | Élèves par correction | Corrections / epoch |
-|---|---|---|
-| Batch (mandatory) | 1600 | 1 |
-| Mini-batch (bonus) | 32 | 50 |
-| Stochastique (bonus) | 1 | 1600 |
-
-Même modèle, même fonction de coût, même gradient — seule change la
-quantité de données utilisée avant chaque correction de theta.

@@ -197,58 +197,6 @@ compare them with the standard gradient descent implementation.
 
 ## 🛠️ Usage
 
-Install the required Python dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Train the model
-
-```bash
-./scripts/logreg_train data/dataset_train.csv
-```
-
-This generates:
-
-```text
-data/theta.csv
-```
-
-### Predict Hogwarts Houses
-
-```bash
-./scripts/logreg_predict data/dataset_test.csv data/theta.csv
-```
-
-This generates:
-
-```text
-data/houses.csv
-```
-
-### Evaluate the model
-
-```bash
-./scripts/accuracy data/dataset_train.csv data/houses.csv
-```
-
-A confusion matrix can also be generated with:
-
-```bash
-./scripts/confusion_matrix data/dataset_train.csv data/houses.csv
-```
-
-Other scripts are available for dataset exploration and visualization:
-
-```bash
-./scripts/describe
-./scripts/histogram
-./scripts/pair_plot
-./scripts/scatter_plot
-./scripts/personal_probabilities
-```
-
 See [`commands.md`](commands.md) for the complete list of commands and their arguments.
 
 ---
