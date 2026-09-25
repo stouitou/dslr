@@ -84,6 +84,13 @@ Vérifie le format imposé (`Index,Hogwarts House`) et le compte (401 lignes).
 Rejoue la prédiction, cette fois sur le jeu d'entraînement.
 
 ```bash
+./scripts/accuracy data/dataset_train.csv data/houses.csv
+```
+**Le chiffre que le sujet exige** : le pourcentage de prédictions correctes.
+Seuil à atteindre : 98 %. ⚠️ Mesuré ici sur les élèves d'entraînement, donc
+optimiste — le modèle les a déjà vus.
+
+```bash
 ./scripts/confusion_matrix data/dataset_train.csv data/houses.csv
 ```
 Compare prédictions et vérité : montre où le modèle se trompe, maison par maison.
@@ -100,25 +107,49 @@ Remet `houses.csv` dans son état normal (prédictions sur le jeu de test).
 
 ---
 
-## 3. Bonus — Stochastic Gradient Descent
+## 3. Bonus — Optimiseurs alternatifs
+
+> Les deux descentes sont dans `src/bonus/`. Un seul programme pour les
+> deux, l'option choisit l'algorithme et les fichiers de sortie.
+> **Aucun fichier du mandatory n'est modifié.**
+
+### Stochastic gradient descent
 
 ```bash
-./scripts/logreg_train_sgd data/dataset_train.csv
+./scripts/logreg_train_bonus --sgd data/dataset_train.csv
 ```
-Même modèle, descente **stochastique** : correction après chaque élève,
-20 epochs au lieu de 800 itérations. Écrit `data/theta_sgd.csv`.
+Corrige theta **après chaque élève** : 1600 corrections par epoch au lieu
+d'une. 20 epochs suffisent, contre 800 itérations pour le batch.
+Écrit `data/theta_sgd.csv`.
 
 ```bash
-./scripts/logreg_predict_sgd data/dataset_test.csv data/theta_sgd.csv
+./scripts/logreg_predict_bonus --sgd data/dataset_test.csv data/theta_sgd.csv
 ```
-Prédit avec les poids du SGD → `data/houses_SGD.csv` (fichier distinct,
-pour ne pas écraser la sortie du mandatory).
+Prédit avec ces poids → `data/houses_SGD.csv`.
+
+### Mini-batch gradient descent
+
+```bash
+./scripts/logreg_train_bonus --mbgd data/dataset_train.csv
+```
+Le compromis : corrige après chaque **paquet de 32 élèves**, soit 50
+corrections par epoch. Écrit `data/theta_mbgd.csv`.
+
+```bash
+./scripts/logreg_predict_bonus --mbgd data/dataset_test.csv data/theta_mbgd.csv
+```
+Prédit avec ces poids → `data/houses_MBGD.csv`.
+
+### Comparer les trois
 
 ```bash
 diff data/houses.csv data/houses_SGD.csv
 ```
-**Aucune sortie = les 400 prédictions sont identiques** à celles du batch.
-C'est la validation du bonus.
+```bash
+diff data/houses.csv data/houses_MBGD.csv
+```
+**Aucune sortie = prédictions identiques** à celles du batch. C'est la
+validation des bonus.
 
 ```bash
 diff data/theta.csv data/theta_sgd.csv
@@ -128,3 +159,13 @@ précédente a bien du sens.
 
 ---
 
+## Les trois descentes en un tableau
+
+| | Élèves par correction | Corrections / epoch |
+|---|---|---|
+| Batch (mandatory) | 1600 | 1 |
+| Mini-batch (bonus) | 32 | 50 |
+| Stochastique (bonus) | 1 | 1600 |
+
+Même modèle, même fonction de coût, même gradient — seule change la
+quantité de données utilisée avant chaque correction de theta.

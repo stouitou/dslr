@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
-import sys
 from numpy.typing import NDArray
+from pathlib import Path
+from typing import Callable
 from config import RELEVANT_FEATURES
 from src.helpers.data import (
     load_csv_dataset,
@@ -15,27 +16,25 @@ from src.helpers.logistic_regression import (
     destandardize_theta
 )
 from src.helpers.plotting import plot_cost_history
-from src.bonus_SGD.stochastic_gradient_descent import train_model_sgd
-from src.bonus_SGD.output_sgd import (
+from src.bonus.output_bonus import (
     initialize_theta_file,
     save_theta_in_file
 )
 
 
-def main(
-        argc: int,
-        argv: list[str]
+def run_training(
+        dataset_path: str,
+        train_model: Callable,
+        theta_file: Path
 ) -> int:
-    """Entraîne les 4 classifieurs one-vs-all par descente stochastique.
+    """Entraîne les 4 classifieurs one-vs-all avec la descente fournie.
 
-    Bonus de logreg_train.py : seule la descente change.
+    Reprend l'enchaînement de logreg_train.py : seules la descente
+    (`train_model`) et la destination (`theta_file`) varient d'un bonus
+    à l'autre.
     """
 
-    if argc != 2:
-        print(f"Usage: {argv[0]} <dataset>.")
-        return 1
-
-    dataset: pd.DataFrame | None = load_csv_dataset(argv[1])
+    dataset: pd.DataFrame | None = load_csv_dataset(dataset_path)
     if dataset is None:
         return 1
 
@@ -48,7 +47,7 @@ def main(
     x: NDArray[np.float64] = get_clean_data(dataset, RELEVANT_FEATURES)
     x, mean, std = standardize_data(x)
 
-    initialize_theta_file(RELEVANT_FEATURES)
+    initialize_theta_file(RELEVANT_FEATURES, theta_file)
 
     cost_history: dict[str, list[float]] = {}
 
@@ -59,31 +58,14 @@ def main(
             len(RELEVANT_FEATURES)
         )
 
-        standardized_theta, history = train_model_sgd(
-            x,
-            y,
-            initial_theta
-        )
-
+        standardized_theta, history = train_model(x, y, initial_theta)
         cost_history[hogwarts_house] = history
 
         # Appris sur données standardisées : on ramène les poids à
         # l'échelle d'origine pour les appliquer au dataset brut.
-        final_theta = destandardize_theta(
-            standardized_theta,
-            mean,
-            std
-        )
-        save_theta_in_file(
-            hogwarts_house,
-            final_theta
-        )
+        final_theta = destandardize_theta(standardized_theta, mean, std)
+        save_theta_in_file(hogwarts_house, final_theta, theta_file)
 
     plot_cost_history(cost_history)
 
     return 0
-
-
-if __name__ == "__main__":
-
-    sys.exit(main(len(sys.argv), sys.argv))

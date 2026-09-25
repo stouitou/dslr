@@ -16,7 +16,7 @@ The objective is to build a complete machine learning pipeline without using a m
 * predict Hogwarts Houses
 * model evaluation
 
-A **bonus implementation using Stochastic Gradient Descent (SGD)** is also included.
+**Two bonus optimizers** are also included: Stochastic Gradient Descent (SGD) and Mini-batch Gradient Descent.
 
 ---
 
@@ -163,24 +163,35 @@ The project also includes tools to analyze the errors through:
 
 ---
 
-## 🚀 Bonus — Stochastic Gradient Descent
+## 🚀 Bonus — Alternative Optimizers
 
-A bonus version of the logistic regression uses **Stochastic Gradient Descent (SGD)** instead of standard batch gradient descent.
+Two bonus versions replace the standard batch gradient descent:
 
-The SGD implementation is located in:
+* **Stochastic Gradient Descent (SGD)** — updates theta after every single student
+* **Mini-batch Gradient Descent** — updates theta after every batch of 32 students
 
-```text
-src/bonus_SGD/
-```
-
-It provides separate training and prediction scripts and generates its own parameter and prediction files:
+Both implementations are located in:
 
 ```text
-theta_sgd.csv
-houses_SGD.csv
+src/bonus/
 ```
 
-The purpose of this bonus is to explore another optimization method and compare it with the standard gradient descent implementation.
+A single pair of scripts handles both, selected by an option:
+
+```bash
+./scripts/logreg_train_bonus --sgd data/dataset_train.csv
+./scripts/logreg_train_bonus --mbgd data/dataset_train.csv
+```
+
+They generate their own parameter and prediction files:
+
+```text
+theta_sgd.csv     houses_SGD.csv
+theta_mbgd.csv    houses_MBGD.csv
+```
+
+The purpose of this bonus is to explore other optimization methods and
+compare them with the standard gradient descent implementation.
 
 ---
 

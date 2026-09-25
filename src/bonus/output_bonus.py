@@ -1,17 +1,19 @@
-# Duplique src/helpers/output.py pour écrire dans des fichiers distincts :
-# le bonus ne doit jamais écraser les sorties de la partie obligatoire.
+# Duplique src/helpers/output.py en rendant le chemin paramétrable, pour que
+# chaque bonus écrive dans ses propres fichiers sans jamais toucher à ceux
+# de la partie obligatoire.
 
 import numpy as np
 from numpy.typing import NDArray
-from config import RESULT_SGD_FILE, THETA_SGD_FILE
+from pathlib import Path
 
 
 def initialize_theta_file(
-        features: list[str]
+        features: list[str],
+        theta_file: Path
 ) -> None:
-    """Crée THETA_SGD_FILE avec sa ligne d'en-tête."""
+    """Crée le fichier de poids avec sa ligne d'en-tête."""
 
-    with THETA_SGD_FILE.open("w") as file:
+    with theta_file.open("w") as file:
         header = [
             "House",
             *features,
@@ -22,11 +24,12 @@ def initialize_theta_file(
 
 def save_theta_in_file(
         hogwarts_house: str,
-        theta: NDArray[np.float64]
+        theta: NDArray[np.float64],
+        theta_file: Path
 ) -> None:
-    """Ajoute à THETA_SGD_FILE les poids d'une maison."""
+    """Ajoute au fichier de poids la ligne d'une maison."""
 
-    with THETA_SGD_FILE.open("a") as f:
+    with theta_file.open("a") as f:
         values: list[str] = [
             hogwarts_house, *(str(value) for value in theta)
         ]
@@ -34,10 +37,11 @@ def save_theta_in_file(
 
 
 def initialize_result_file(
+        result_file: Path
 ) -> None:
-    """Crée RESULT_SGD_FILE avec sa ligne d'en-tête."""
+    """Crée le fichier de prédictions avec sa ligne d'en-tête."""
 
-    with RESULT_SGD_FILE.open("w") as file:
+    with result_file.open("w") as file:
         header = [
             "Index",
             "Hogwarts House"
@@ -48,10 +52,11 @@ def initialize_result_file(
 def save_result_in_file(
         index: int,
         hogwarts_house: str,
+        result_file: Path
 ) -> None:
-    """Ajoute à RESULT_SGD_FILE la prédiction d'un élève."""
+    """Ajoute au fichier de prédictions la ligne d'un élève."""
 
-    with RESULT_SGD_FILE.open("a") as f:
+    with result_file.open("a") as f:
         values: list[str] = [
             str(index),
             hogwarts_house
