@@ -1,42 +1,36 @@
 import pandas as pd
-import sys
 from pathlib import Path
 from src.helpers.data import (
     load_csv_dataset,
     prepare_prediction_data
 )
 from src.helpers.logistic_regression import model
-from src.bonus_SGD.output_sgd import (
+from src.bonus.output_bonus import (
     initialize_result_file,
     save_result_in_file
 )
 
 
-def main(
-        argc: int,
-        argv: list[str]
+def run_prediction(
+        dataset_path: str,
+        theta_path: str,
+        result_file: Path
 ) -> int:
-    """Prédit les maisons à partir de poids entraînés par SGD.
+    """Prédit les maisons à partir d'un fichier de poids.
 
-    Bonus de logreg_predict.py : seul le fichier de sortie change.
+    Identique à logreg_predict.py : c'est le même modèle, seule la façon
+    dont les poids ont été obtenus diffère. Seule la destination varie.
     """
 
-    if argc != 3:
-        print(f"Usage: {argv[0]} <dataset> <theta_file>.")
-        return 1
-
-    dataset: pd.DataFrame | None = load_csv_dataset(argv[1])
+    dataset: pd.DataFrame | None = load_csv_dataset(dataset_path)
     if dataset is None:
         return 1
 
-    X, theta = prepare_prediction_data(
-        dataset,
-        Path(argv[2])
-    )
+    X, theta = prepare_prediction_data(dataset, Path(theta_path))
     if theta is None:
         return 1
 
-    initialize_result_file()
+    initialize_result_file(result_file)
 
     # One-vs-all : on retient la maison de plus forte probabilité.
     for i in range(dataset.shape[0]):
@@ -48,11 +42,6 @@ def main(
                 best_probability = probability
                 result = hogwarts_house
 
-        save_result_in_file(i, result)
+        save_result_in_file(i, result, result_file)
 
     return 0
-
-
-if __name__ == "__main__":
-
-    sys.exit(main(len(sys.argv), sys.argv))

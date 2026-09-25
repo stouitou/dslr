@@ -35,3 +35,14 @@ RESULT_SGD_FILE: Path = DATA / "houses_SGD.csv"
 SGD_LEARNING_RATE = 0.01
 # Nombre de passages complets sur le dataset (et non d'itérations).
 SGD_N_EPOCHS = 20
+
+# --- Bonus : mini-batch gradient descent ---------------------------------
+THETA_MBGD_FILE: Path = DATA / "theta_mbgd.csv"
+RESULT_MBGD_FILE: Path = DATA / "houses_MBGD.csv"
+# Entre le batch (0.1) et le SGD (0.01) : le gradient d'un paquet est plus
+# fiable que celui d'un seul élève, on peut donc avancer un peu plus vite.
+MBGD_LEARNING_RATE = 0.05
+# Plus que le SGD : 50 corrections par epoch au lieu de 1600.
+MBGD_N_EPOCHS = 50
+# 1600 / 32 = 50 paquets par epoch.
+MBGD_BATCH_SIZE = 32

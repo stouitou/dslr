@@ -6,3 +6,5 @@ data/theta.csv
 data/theta_sgd.csv
 data/houses.csv
 data/houses_SGD.csv
+data/theta_mbgd.csv
+data/houses_MBGD.csv
